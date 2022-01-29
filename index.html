@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SS Experiments</title>
+  <link rel="icon" type="image/x-icon" href="logo.jpg">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Circuit Diagram</h1>
+  <img src="Diagram.png" alt="Circuit Diagram">
+  <h1>Code for Node MCU</h1>
+  <div id="google"><div id="assistant">
+<p>#include < ESP8266WiFi.h> <br>
+    #include "Adafruit_MQTT.h"<br>
+    #include "Adafruit_MQTT_Client.h"<br>
+    #define wifi"your wifi name"<br>
+    #define password "Your wifi password"<br>
+    #define server "io.adafruit.com"<br>
+    #define port 1883<br>
+    #define username "your adafruit username"<br>
+    #define key "your adafruit key"<br>
+    WiFiClient esp;<br>
+    Adafruit_MQTT_Client  mqtt(&esp,server,port,username,key);<br>
+    Adafruit_MQTT_Subscribe feed(&mqtt,username"/feeds/feed name");<br>
+    void setup() {<br>
+        <br>
+      Serial.begin(115200);<br>
+      pinMode(D2,OUTPUT);<br>
+      delay(10);<br>
+      Serial.println("Adafruit MQTT");<br>
+      Serial.println();<br>
+      Serial.println();<br>
+      Serial.println("connecting to ");<br>
+      Serial.println(wifi);<br>
+      WiFi.begin(wifi,password);<br>
+      while (WiFi.status()!=WL_CONNECTED)<br>
+      {<br>
+        delay(500);<br>
+        Serial.print(".");<br>
+      }<br>
+      Serial.println();<br>
+      Serial.println("WiFi connected");<br>
+      Serial.println("IP address: ");<br>
+      mqtt.subscribe(&feed);<br>
+      Serial.println("Connecting to MQTT");<br>
+      while(mqtt.connect())<br>
+      {<br>
+        Serial.print(".");<br>
+      }<br>
+    }<br>
+    
+    void loop() {<br>
+      Serial.println(" ");<br>
+      while(mqtt.readSubscription(10000))<br>
+      {<br>
+        Serial.print("Got: ");<br>
+        Serial.print((char*)feed.lastread);<br>
+        int a =atoi((char*)feed.lastread);<br>
+        Serial.print('/t');<br>
+        Serial.println(a);<br>
+        if(a==1)<br>
+        {<br>
+          digitalWrite(D2,0);<br>
+        }<br>
+        else<br>
+        {<br>
+          digitalWrite(D2,1);<br>
+        }<br>
+       }<br>
+      }<br></p>
+      
+</div>
+</div>
+
+</body>
+</html>
